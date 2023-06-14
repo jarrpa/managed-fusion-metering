@@ -80,3 +80,22 @@ deploy: kustomize ## Deploy application to the K8s cluster specified in ~/.kube/
 remove: ## Remove application from the K8s cluster specified in ~/.kube/config.
 	$(KUSTOMIZE) build config/default | $(KUBECTL) delete -f -
 
+##@ Mock API Server
+
+go-build-mock: ## Run go build of mockserver against code.
+	@GOBIN=${GOBIN} ./hack/go-build-mockserver.sh
+
+mock-build: test-setup ## Build mockserver image with the application.
+	docker build -t ${MOCKSERVER_IMG} -f mock/Dockerfile.mock .
+
+mock-push: ## Push mockserver image with the application.
+	docker push ${MOCKSERVER_IMG}
+
+mock-deploy: kustomize ## Deploy mock application to the K8s cluster specified in ~/.kube/config.
+	cd config/mock && \
+		$(KUSTOMIZE) edit set image mockserver=${MOCKSERVER_IMG}
+	$(KUSTOMIZE) build config/mock | $(KUBECTL) apply -f -
+
+mock-remove: ## Remove mock application from the K8s cluster specified in ~/.kube/config.
+	$(KUSTOMIZE) build config/mock | $(KUBECTL) delete -f -
+
