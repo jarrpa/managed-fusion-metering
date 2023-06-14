@@ -11,21 +11,20 @@ COPY go.mod go.sum ./
 
 # Copy the project source
 COPY Makefile ./
-COPY mock/api/ mock/api/
-COPY cmd/metering-reporter cmd/metering-reporter
+COPY mock/ mock/
 COPY hack/ hack/
 COPY config/ config/
 # Run tests and linting
 RUN make go-test
 
 # Build
-RUN make go-build
+RUN make go-build-mock
 
 # Use distroless as minimal base image to package the application binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details
 FROM gcr.io/distroless/static:nonroot
 WORKDIR /
-COPY --from=builder /workspace/bin/metering-reporter .
+COPY --from=builder /workspace/bin/mockserver .
 USER 65532:65532
 
-ENTRYPOINT ["/metering-reporter"]
+ENTRYPOINT ["/mockserver"]

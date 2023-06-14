@@ -78,7 +78,8 @@
                 "repo",
                 "test",
                 "vendor",
-                "reporter"
+                "reporter",
+                "mock"
             ]
         ]
     }
