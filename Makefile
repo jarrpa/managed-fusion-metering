@@ -70,3 +70,13 @@ reporter-build: test-setup ## Build reporter image with the application.
 reporter-push: ## Push reporter image with the application.
 	docker push ${REPORTER_IMG}
 
+##@ Deployment
+
+deploy: kustomize ## Deploy application to the K8s cluster specified in ~/.kube/config.
+	cd config/default && \
+		$(KUSTOMIZE) edit set image metering-reporter=${REPORTER_IMG}
+	$(KUSTOMIZE) build config/default | $(KUBECTL) apply -f -
+
+remove: ## Remove application from the K8s cluster specified in ~/.kube/config.
+	$(KUSTOMIZE) build config/default | $(KUBECTL) delete -f -
+

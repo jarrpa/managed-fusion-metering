@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: managed-fusion-ns
+namePrefix: managed-fusion-
+images:
+- name: metering-reporter
+  newName: quay.io/jarrpa/managed-fusion-metering-reporter
+  newTag: latest
+resources:
+- namespace.yaml
+- metering-reporter.yaml
+secretGenerator:
+- behavior: create
+  literals:
+  - token=token
+  name: metering-reporter-cron-secret

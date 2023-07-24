@@ -1,0 +1,24 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: metering-reporter-cron
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            job: metering-reporter
+        spec:
+          containers:
+          - name: metering-reporter-cron
+            image: metering-reporter
+            imagePullPolicy: Always
+            command:
+            - /metering-reporter
+            envFrom:
+            - secretRef:
+                name: metering-reporter-cron-secret
+          restartPolicy: OnFailure

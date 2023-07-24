@@ -10,6 +10,10 @@ endef
 
 KUBECTL ?= kubectl
 
+KUSTOMIZE = $(BIN_DIR)/kustomize
+kustomize: ## Download kustomize locally if necessary.
+	$(call go-get-tool,$(KUSTOMIZE),sigs.k8s.io/kustomize/kustomize/v4@v4.5.3)
+
 GINKGO = $(BIN_DIR)/ginkgo
 ginkgo: ## Download ginkgo locally if necessary.
 	$(call go-get-tool,$(GINKGO),github.com/onsi/ginkgo/v2/ginkgo@latest)
